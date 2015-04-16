@@ -1,0 +1,9 @@
+include README.md
+include requirements.txt
+include application.py
+graft docs
+prune docs/_build
+graft tests
+global-exclude *~
+global-exclude *.pyc
+global-exclude *.pyo

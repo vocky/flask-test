@@ -5,8 +5,16 @@ import json
 from flask import abort, make_response
 import dicttoxml
 import string
-import settings
 
+class LibConfig(ctypes.Structure):
+    _fields_=[('kMatchRadius', ctypes.c_int),
+              ('kMatchAngle', ctypes.c_int),
+              ('kMinTimeInterval', ctypes.c_int),
+              ('kMaxTimeInterval', ctypes.c_int),
+              ('libpath', ctypes.c_char * 256)]
+    def getdict(self):
+        return dict((f, getattr(self, f)) for f, _ in self._fields_)
+        
 class CarGpsData(ctypes.Structure):
     _fields_=[('iGpsTime', ctypes.c_int),
               ('iAzimuth', ctypes.c_int),
@@ -39,12 +47,14 @@ class TrafficInfoHeader(ctypes.Structure):
               ('pstTrafficInfoData', ctypes.POINTER(TrafficInfo))]
         
 class timolibrary(object):
-    def __init__(self):
-        timo_library=ctypes.cdll.LoadLibrary(settings.TIMOLIBPATH['libpath'])
-        assert timo_library != None 
-        self.inittimo = timo_library.InitTimo2
+    def __init__(self, config):
+        timo_library = ctypes.cdll.LoadLibrary(config['TIMO_LIB_PATH'])
+        if timo_library == None:
+            raise Exception('TIMO_LIB_PATH library is not found.') 
+        # init api
+        self.inittimo = timo_library.InitTimo3
         self.inittimo.restype = ctypes.c_void_p
-        self.inittimo.argtypes = []
+        self.inittimo.argtypes = [ctypes.POINTER(LibConfig)]
         self.ProcessTimo = timo_library.ProcessTimo
         self.ProcessTimo.argtypes = [ctypes.c_void_p, ctypes.POINTER(CarGpsHeader), ctypes.POINTER(TrafficInfoHeader)]
         self.ProcessTimo.restype = None
@@ -55,8 +65,16 @@ class timolibrary(object):
         self.CloseTimo.argtypes = [ctypes.c_void_p]
         self.CloseTimo.restype = None
         self._timolib = ctypes.c_void_p()
-        self._timolib = self.inittimo()
-        assert self._timolib != None
+        # initialize config
+        libconfig = LibConfig()
+        libconfig.kMatchRadius = config['TIMO_LIB_MATCH_RADIUS']
+        libconfig.kMatchAngle = config['TIMO_LIB_MATCH_ANGLE']
+        libconfig.kMinTimeInterval = config['TIMO_LIB_MIN_TIMEGAP']
+        libconfig.kMaxTimeInterval = config['TIMO_LIB_MAX_TIMEGAP']
+        libconfig.libpath = config['TIMO_LIB_DATA_PATH']
+        self._timolib = self.inittimo(ctypes.byref(libconfig))
+        if self._timolib == None:
+            raise Exception('initial failed.')
     
     def __enter__(self):
         return self
@@ -125,7 +143,7 @@ class timolibrary(object):
     def decoding2json(self, proto):
         try:
             newdata = json.loads(proto)
-        except ValueError:
+        except:
             abort(make_response("Decoding  Error", 396))
             
         inputheader = CarGpsHeader()
