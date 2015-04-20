@@ -1,15 +1,7 @@
 Timorest - Timo library service
 ===============================
-
-Post some gps points of one trace, then the response is the matched links.
-
-========================  ============    =============
-Content-Type              input format    output format
-========================  ============    =============
-application/octet-stream  protobuf        protobuf
-application/json          json            json
-application/xml           protobuf        xml
-========================  ============    =============
++ This project depends on timo project.
++ You must ensure the shared library of TIMO_LIB_PATH is existed. You can refer to project Timo.
 
 Installation
 ------------
@@ -30,7 +22,6 @@ All config prefixed with ``TIMO_`` can be overridden by direct envvar.
 =====================  =========== 
 config parameters      about
 =====================  =========== 
-TIMO_REQUEST_URL       Pre-defined request url that you post data.
 TIMO_LIB_PATH          Abs path of the timo c library. Default is in /usr/local/lib/.
 TIMO_LIB_DATA_PATH     Abs path of timo source data file.
 TIMO_LIB_MIN_TIMEGAP   The min time gap between two gps points.
@@ -48,7 +39,18 @@ to debug::
     
 API
 ------------
-http://localhost:5000/[TIMO_REQUEST_URL]
+``POST /timo``
+
+The single major api of this application, used to post a couple of gps points.
+
+Post some gps points of one trace, then the response is the matched links.
+
+========================  ============    =============
+Content-Type              input format    output format
+========================  ============    =============
+application/octet-stream  protobuf        protobuf
+application/json          json            json
+========================  ============    =============
 
 
 example

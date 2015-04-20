@@ -48,7 +48,7 @@ def create_app(config=None):
                         if k.startswith('TIMO_'))
     app.config.update(env_override)
     
-    timolibrary = timolib.timolibrary(app.config)
+    timolibrary = timolib.TimoLibrary(app.config)
 
 # This route will show a form to submit some JSON data
 # This route will accept a request containing JSON
@@ -60,5 +60,5 @@ def create_app(config=None):
 # or even a python urllib2.Request we would need to use
 # request.data to get the JSON string
     app.timolibrary = timolibrary
-    app.add_url_rule(app.config['TIMO_REQUEST_URL'], 'jsonreq', jsonreq, methods=['POST',])
+    app.add_url_rule('/timo', 'jsonreq', jsonreq, methods=['POST',])
     return app

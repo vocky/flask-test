@@ -8,7 +8,7 @@ __licence__ = "The modified BSD license"
 from setuptools import setup
 
 setup(
-      name='timo', 
+      name='timorest', 
       version='1.0',
       description='Code example about how to manage a JSON/xml request using Flask',
       author='Laye', 

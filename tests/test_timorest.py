@@ -13,13 +13,12 @@ kErrorCode = {395 : 'Input data is empty.', \
              399 : 'Content-Type is empty.', \
              500 : 'Program dumped.'}
 
+
 class TimoTestCase(unittest.TestCase):
     def setUp(self):
         self.assertTrue(os.path.isfile(settings.TIMO_LIB_PATH))
-        self.app = create_app(config = {'TIMO_REQUEST_URL': '/test', 
-                                                 'TIMO_LIB_DATA_PATH': 'forcpp.dat'})
+        self.app = create_app(config = {'TIMO_LIB_DATA_PATH': 'forcpp.dat'})
         self.assertTrue(self.app)
-        self.assertEqual(self.app.config['TIMO_REQUEST_URL'], '/test')
         self.assertEqual(self.app.config['TIMO_LIB_MIN_TIMEGAP'], settings.TIMO_LIB_MIN_TIMEGAP)
         self.assertEqual(self.app.config['TIMO_LIB_MAX_TIMEGAP'], settings.TIMO_LIB_MAX_TIMEGAP)
         self.assertEqual(self.app.config['TIMO_LIB_MATCH_RADIUS'], settings.TIMO_LIB_MATCH_RADIUS)
@@ -47,7 +46,7 @@ class TimoTestCase(unittest.TestCase):
         finally:
             file_object.close()
         headers = [('Content-Type', 'application/json')]
-        response = self.client.post(self.app.config['TIMO_REQUEST_URL'], \
+        response = self.client.post('/timo', \
                                     data=str(jsondata), headers=headers)
         self.assertEqual(response.status_code, 200)
         outputjson = json.loads(response.data)
@@ -75,7 +74,7 @@ class TimoTestCase(unittest.TestCase):
             gpspointlist.iGpsTime.append(string.atoi(jsondata[i]['iGpsTime']))
         headers = [('Content-Type', 'application/octet-stream')]
         point_str = gpspointlist.SerializeToString()
-        response = self.client.post(self.app.config['TIMO_REQUEST_URL'], \
+        response = self.client.post('/timo', \
                                     data=str(point_str), headers=headers)
         self.assertEqual(response.status_code, 200)
         #process proto
@@ -83,7 +82,7 @@ class TimoTestCase(unittest.TestCase):
         try:
             trafficinfoheader_proto.ParseFromString(response.data)
         except:
-            print "Parse protobuff failed."
+            raise Exception("Parse protobuff failed.")
 
         for i in range(len(trafficinfoheader_proto.iTileID)):
             self.assertEqual(trafficinfoheader_proto.iTileID[i], self.resultdata[i]['iTileID'])
@@ -108,19 +107,19 @@ class TimoTestCase(unittest.TestCase):
             gpspointlist.iGpsTime.append(string.atoi(jsondata[i]['iGpsTime']))
         headers = [('Content-Type', 'application/xml')]
         point_str = gpspointlist.SerializeToString()
-        response = self.client.post(self.app.config['TIMO_REQUEST_URL'], \
+        response = self.client.post('/timo', \
                                     data=str(point_str), headers=headers)
         self.assertEqual(response.status_code, 200)
         
     def test_other_post(self):
         headers = [('Content-Type', 'application/txt')]
-        response = self.client.post(self.app.config['TIMO_REQUEST_URL'], \
+        response = self.client.post('/timo', \
                                     data='str', headers=headers)
         self.assertEqual(response.status_code, 399)
         
     def test_errorjson_post(self):
         headers = [('Content-Type', 'application/json')]
-        response = self.client.post(self.app.config['TIMO_REQUEST_URL'], \
+        response = self.client.post('timo', \
                                     data='str', headers=headers)
         self.assertEqual(response.status_code, 396)
         
@@ -128,7 +127,8 @@ class TimoTestCase(unittest.TestCase):
         current_dir, _ = os.path.split(__file__)
         cfg = os.path.join(current_dir, 'settings.cfg')
         app = create_app(cfg)
-        self.assertEqual(app.config['TIMO_REQUEST_URL'], '/testfile')
+        self.assertEqual(app.config['TIMO_LIB_MAX_TIMEGAP'], 100)
+        self.assertEqual(app.config['TIMO_LIB_MATCH_RADIUS'], 30)
         app.timolibrary.close()
 
 if __name__ == '__main__':

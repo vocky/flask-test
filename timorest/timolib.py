@@ -6,6 +6,7 @@ from flask import abort, make_response
 import dicttoxml
 import string
 
+
 class LibConfig(ctypes.Structure):
     _fields_=[('kMatchRadius', ctypes.c_int),
               ('kMatchAngle', ctypes.c_int),
@@ -14,7 +15,8 @@ class LibConfig(ctypes.Structure):
               ('libpath', ctypes.c_char * 256)]
     def getdict(self):
         return dict((f, getattr(self, f)) for f, _ in self._fields_)
-        
+
+
 class CarGpsData(ctypes.Structure):
     _fields_=[('iGpsTime', ctypes.c_int),
               ('iAzimuth', ctypes.c_int),
@@ -23,11 +25,14 @@ class CarGpsData(ctypes.Structure):
               ('dLatitude', ctypes.c_double)]
     def getdict(self):
         return dict((f, getattr(self, f)) for f, _ in self._fields_)
-#gps list header    
+
+
+# gps list header
 class CarGpsHeader(ctypes.Structure):
     _fields_=[('iGPSCount', ctypes.c_int),
                ('pstGPSData', ctypes.POINTER(CarGpsData))]
-    
+
+
 class TrafficInfo(ctypes.Structure):
     _fields_=[('iTileID', ctypes.c_int),
               ('iLinkID', ctypes.c_int),
@@ -41,12 +46,15 @@ class TrafficInfo(ctypes.Structure):
               ('fMaxSpeed', ctypes.c_float)]
     def getdict(self):
         return dict((f, getattr(self, f)) for f, _ in self._fields_)
-#Traffic infomation header
+
+
+# Traffic information header
 class TrafficInfoHeader(ctypes.Structure):
     _fields_=[('iTrafficInfoCount', ctypes.c_int),
               ('pstTrafficInfoData', ctypes.POINTER(TrafficInfo))]
         
-class timolibrary(object):
+
+class TimoLibrary(object):
     def __init__(self, config):
         timo_library = ctypes.cdll.LoadLibrary(config['TIMO_LIB_PATH'])
         if timo_library == None:

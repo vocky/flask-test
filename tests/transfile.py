@@ -22,6 +22,5 @@ def transfile(sourcefile, outputfile):
 
 if __name__ == '__main__':  
     if (len(sys.argv) != 3):
-        print('usage:transfile.py sourcefilename outputfilename')
-        return
+        raise Exception('usage:transfile.py sourcefilename outputfilename')
     transfile(sys.argv[1], sys.argv[2])
