@@ -6,7 +6,7 @@
 # lib path
 TIMO_LIB_PATH = "/usr/local/lib/libtimo.so.1.1.3"
 # data source
-TIMO_LIB_DATA_PATH = "/mnt/tests/forcpp.dat"
+TIMO_LIB_DATA_PATH = "/mnt/data/forcpp.dat"
 # min time interval
 TIMO_LIB_MIN_TIMEGAP = 4
 # max time interval

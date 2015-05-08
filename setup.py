@@ -23,7 +23,7 @@ setup(
                       },
       #  Uncomment one or more lines below in the install_requires section
       #  for the specific client drivers/modules your application needs.
-      install_requires=['flask>=0.10',
+      install_requires=['Flask>=0.10',
                         'protobuf>=2.6',
                         'dicttoxml>=1.6',
       ],

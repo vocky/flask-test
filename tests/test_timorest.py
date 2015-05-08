@@ -124,7 +124,7 @@ class TimoTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 396)
         
     def test_init(self):
-        current_dir, _ = os.path.split(__file__)
+        current_dir = os.getcwd()
         cfg = os.path.join(current_dir, 'settings.cfg')
         app = create_app(cfg)
         self.assertEqual(app.config['TIMO_LIB_MAX_TIMEGAP'], 100)
