@@ -5,12 +5,12 @@ from timorest import default_settings as settings
 from timorest import PointDefine_pb2
 from timorest import create_app
 
-kErrorCode = {395 : 'Input data is empty.', \
-             396 : 'Decoding input data error.', \
-             397 : 'Timo process has been broken down.', \
-             398 : 'Clean Timo cache has failed.', \
+kErrorCode = {400 : 'Input data is empty.', \
+             400 : 'Decoding input data error.', \
+             500 : 'Timo process has been broken down.', \
+             500 : 'Clean Timo cache has failed.', \
              200 : 'Timo process is successed.', \
-             399 : 'Content-Type is empty.', \
+             400 : 'Content-Type is empty.', \
              500 : 'Program dumped.'}
 
 
@@ -115,13 +115,13 @@ class TimoTestCase(unittest.TestCase):
         headers = [('Content-Type', 'application/txt')]
         response = self.client.post('/timo', \
                                     data='str', headers=headers)
-        self.assertEqual(response.status_code, 399)
+        self.assertEqual(response.status_code, 400)
         
     def test_errorjson_post(self):
         headers = [('Content-Type', 'application/json')]
         response = self.client.post('timo', \
                                     data='str', headers=headers)
-        self.assertEqual(response.status_code, 396)
+        self.assertEqual(response.status_code, 400)
         
     def test_init(self):
         current_dir = os.getcwd()

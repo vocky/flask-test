@@ -99,11 +99,11 @@ class TimoLibrary(object):
         try:
             pointlist_proto.ParseFromString(proto)
         except:
-            abort(make_response("Parse Error", 396))
+            abort(make_response("Parse Error", 400))
         #initialize gps header
         inputheader.iGPSCount = len(pointlist_proto.iGpsTime)
         if inputheader.iGPSCount == 0:
-            abort(make_response("Input Error", 395))
+            abort(make_response("Input Error", 400))
         inputheader.pstGPSData = (inputheader.iGPSCount * CarGpsData)()
         for i in range(inputheader.iGPSCount):
             inputheader.pstGPSData[i].iGpsTime = pointlist_proto.iGpsTime[i]
@@ -120,7 +120,7 @@ class TimoLibrary(object):
             if self._timolib is not None:
                 self.ProcessTimo(ctypes.c_void_p(self._timolib), ctypes.byref(inputheader), ctypes.byref(trafficinfolist))
         except:
-            abort(make_response("Process Error", 397))
+            abort(make_response("Process Error", 500))
         return trafficinfolist
         
     def decodingdata(self, proto):
@@ -143,7 +143,7 @@ class TimoLibrary(object):
             if self._timolib is not None:
                 self.CleanTimoCache(ctypes.c_void_p(self._timolib), ctypes.byref(trafficinfolist))
         except:
-            abort(make_response("Clean Error", 398))
+            abort(make_response("Clean Error", 500))
         #transform to buff
         outputstr = trafficinfoheader_proto.SerializeToString()
         return outputstr
@@ -152,13 +152,13 @@ class TimoLibrary(object):
         try:
             newdata = json.loads(proto)
         except:
-            abort(make_response("Decoding  Error", 396))
+            abort(make_response("Decoding  Error", 400))
             
         inputheader = CarGpsHeader()
         #initialize gps header
         inputheader.iGPSCount = len(newdata)
         if inputheader.iGPSCount == 0:
-            abort(make_response("Input Error", 395))
+            abort(make_response("Input Error", 400))
         inputheader.pstGPSData = (inputheader.iGPSCount * CarGpsData)()
         try:
             for i in range(inputheader.iGPSCount):
@@ -168,7 +168,7 @@ class TimoLibrary(object):
                 inputheader.pstGPSData[i].dLongitude = string.atof(newdata[i]['dLongitude'])
                 inputheader.pstGPSData[i].dLatitude = string.atof(newdata[i]['dLatitude'])
         except:
-            abort(make_response("Input Error", 395))
+            abort(make_response("Input Error", 500))
                                 
         trafficinfolist = TrafficInfoHeader()
         trafficinfolist.iTrafficInfoCount = 0
@@ -178,7 +178,7 @@ class TimoLibrary(object):
             if self._timolib is not None:
                 self.ProcessTimo(ctypes.c_void_p(self._timolib), ctypes.byref(inputheader), ctypes.byref(trafficinfolist))
         except:
-            abort(make_response("Process Error", 397))
+            abort(make_response("Process Error", 500))
         #encoding to json
         jsonlist = []
         for i in range(trafficinfolist.iTrafficInfoCount):
@@ -188,7 +188,7 @@ class TimoLibrary(object):
             if self._timolib is not None:
                 self.CleanTimoCache(ctypes.c_void_p(self._timolib), ctypes.byref(trafficinfolist))
         except:
-            abort(make_response("Clean Error", 398))
+            abort(make_response("Clean Error", 500))
         return json.dumps(jsonlist)
     
     def decoding2xml(self, proto):
@@ -201,7 +201,7 @@ class TimoLibrary(object):
             if self._timolib is not None:
                 self.CleanTimoCache(ctypes.c_void_p(self._timolib), ctypes.byref(trafficinfolist))
         except:
-            abort(make_response("Clean Error", 398))
+            abort(make_response("Clean Error", 500))
         xml = dicttoxml.dicttoxml(jsonlist)
         return xml
     

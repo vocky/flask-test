@@ -4,7 +4,7 @@
     App instance specific settings
 """
 # lib path
-TIMO_LIB_PATH = "/usr/local/lib/libtimo.so.1.1.3"
+TIMO_LIB_PATH = "/usr/local/lib/libtimo.so"
 # data source
 TIMO_LIB_DATA_PATH = "/mnt/data/forcpp.dat"
 # min time interval

@@ -21,7 +21,7 @@ def jsonreq():
     elif content_type == 'application/xml':
         return timolibrary.decoding2xml(request.get_data())
     else:
-        abort(make_response("Content-Type Error", 399))
+        abort(make_response("Content-Type Error", 400))
             
 def create_app(config=None):
     """Create timorest application
