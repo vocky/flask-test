@@ -5,11 +5,14 @@ Timorest - Timo library service
 
 Installation
 ------------
-+ Installing Timorest requires Python 2.7, with setuptools pre-installed.
-+ Simply run ``sudo python setup.py install`` will do the trick.
+Installing Timorest requires `Python <https://www.python.org/downloads>`_:
 
-Settings
---------
+.. code-block:: console
+	
+    $ sudo python setup.py install
+
+Configuration
+-------------
 Config tries the following:
 
 1. 'config' parameter.
@@ -30,12 +33,12 @@ TIMO_LIB_MATCH_RADIUS  Match radius.
 TIMO_LIB_MATCH_ANGLE   Match angle.
 =====================  =========== 
 
-Running & Deploying
--------------------
+Quickstart
+----------
 We've provided a ready-to-use application.py wsgi portal.
-to debug:
+to debug::
 
-    ./application.py
+    $ ./application.py
     
 API
 ------------
@@ -54,16 +57,17 @@ application/json          json            json
 
 Example
 -------
-`Post:`
 
-```curl -X POST -H "Content-Type:application/json" -d '[{"dLongitude": "140.206185961", "iGpsTime": "1399117967", "dLatitude": "35.6821634769", "fGpsSpeed": "127", "iAzimuth": "267"},{"dLongitude": "140.203765377", "iGpsTime": "1399117974", "dLatitude": "35.6821178432", "fGpsSpeed": "122", "iAzimuth": "271"}]' http://localhost:5000/timo```
+Request::
 
-`Response:`
+    $ curl -X POST -H "Content-Type:application/json" -d '[{"dLongitude": "140.206185961", "iGpsTime": "1399117967", "dLatitude": "35.6821634769", "fGpsSpeed": "127", "iAzimuth": "267"},{"dLongitude": "140.203765377", "iGpsTime": "1399117974", "dLatitude": "35.6821178432", "fGpsSpeed": "122", "iAzimuth": "271"}]' http://localhost:5000/timo
 
-```[{"iLinkID": 411, "iTime": 1399117974, "fLinkLength": 2004.0, "fAverageSpeed": 119.53248596191406, "iLinkDegree": 0, "fMaxSpeed": 119.53248596191406, "IsConnected": 1, "iTileID": -298116813, "iLinkDir": 0, "fPathLength": 332.03466796875}]```
+Response::
 
-`Normal response codes:`
+    [{"iLinkID": 411, "iTime": 1399117974, "fLinkLength": 2004.0, "fAverageSpeed": 119.53248596191406, "iLinkDegree": 0, "fMaxSpeed": 119.53248596191406, "IsConnected": 1, "iTileID": -298116813, "iLinkDir": 0, "fPathLength": 332.03466796875}]
 
-+ `200 OK`
-+ `400 Bad Request` - e.g. invalid request data/format/headers.
-+ `500 process dumped`
+Normal response codes:
+
++ **200 OK**
++ **400 Bad Request** - e.g. invalid request data/format/headers.
++ **500 process dumped**

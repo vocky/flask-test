@@ -1,5 +1,5 @@
 import unittest
-import os,string
+import os,string,sys
 import json
 from timorest import default_settings as settings
 from timorest import PointDefine_pb2
@@ -17,7 +17,9 @@ kErrorCode = {400 : 'Input data is empty.', \
 class TimoTestCase(unittest.TestCase):
     def setUp(self):
         self.assertTrue(os.path.isfile(settings.TIMO_LIB_PATH))
-        self.app = create_app(config = {'TIMO_LIB_DATA_PATH': 'forcpp.dat'})
+        current_dir = sys.path[0]
+        appdata = os.path.join(current_dir, 'forcpp.dat')
+        self.app = create_app(config = {'TIMO_LIB_DATA_PATH': appdata})
         self.assertTrue(self.app)
         self.assertEqual(self.app.config['TIMO_LIB_MIN_TIMEGAP'], settings.TIMO_LIB_MIN_TIMEGAP)
         self.assertEqual(self.app.config['TIMO_LIB_MAX_TIMEGAP'], settings.TIMO_LIB_MAX_TIMEGAP)
@@ -26,8 +28,9 @@ class TimoTestCase(unittest.TestCase):
         self.app.testing = True
         self.client = self.app.test_client()
         # read result data
-        self.assertTrue(os.path.isfile('output.json'))
-        file_object = open('output.json', 'r')
+        outputjson = os.path.join(current_dir, 'output.json')
+        self.assertTrue(os.path.isfile(outputjson))
+        file_object = open(outputjson, 'r')
         try:
             jsondata = file_object.read()
         finally:
@@ -39,8 +42,10 @@ class TimoTestCase(unittest.TestCase):
         
     def test_json_post(self):
         # read json file
-        self.assertTrue(os.path.isfile('input.json'))
-        file_object = open('input.json', 'r')
+        current_dir = sys.path[0]
+        inputjson = os.path.join(current_dir, 'input.json')
+        self.assertTrue(os.path.isfile(inputjson))
+        file_object = open(inputjson, 'r')
         try:
             jsondata = file_object.read()
         finally:
@@ -57,8 +62,10 @@ class TimoTestCase(unittest.TestCase):
     
     def test_oct_post(self):
         # read json file
-        self.assertTrue(os.path.isfile('input.json'))
-        file_object = open('input.json', 'r')
+        current_dir = sys.path[0]
+        inputjson = os.path.join(current_dir, 'input.json')
+        self.assertTrue(os.path.isfile(inputjson))
+        file_object = open(inputjson, 'r')
         try:
             strdata = file_object.read()
         finally:
@@ -90,8 +97,10 @@ class TimoTestCase(unittest.TestCase):
     
     def test_xml_post(self):
         # read json file
-        self.assertTrue(os.path.isfile('input.json'))
-        file_object = open('input.json', 'r')
+        current_dir = sys.path[0]
+        inputjson = os.path.join(current_dir, 'input.json')
+        self.assertTrue(os.path.isfile(inputjson))
+        file_object = open(inputjson, 'r')
         try:
             strdata = file_object.read()
         finally:
@@ -122,14 +131,6 @@ class TimoTestCase(unittest.TestCase):
         response = self.client.post('timo', \
                                     data='str', headers=headers)
         self.assertEqual(response.status_code, 400)
-        
-    def test_init(self):
-        current_dir = os.getcwd()
-        cfg = os.path.join(current_dir, 'settings.cfg')
-        app = create_app(cfg)
-        self.assertEqual(app.config['TIMO_LIB_MAX_TIMEGAP'], 100)
-        self.assertEqual(app.config['TIMO_LIB_MATCH_RADIUS'], 30)
-        app.timolibrary.close()
 
 if __name__ == '__main__':
     unittest.main()
