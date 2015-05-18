@@ -1,5 +1,6 @@
 include README.md
 include requirements.txt
+include requirements-dev.txt
 include application.py
 graft docs
 graft tests
